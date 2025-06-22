@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charity: water Pipe Tetris</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="img/cw_logo.png">
+    <style>
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            border: 0;
+        }
+        #loading-message {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #2E9DF7;
+            z-index: 200;
+        }
+        #game-over-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(46,157,247,0.85);
+            color: #fff;
+            font-size: 2.2rem;
+            font-weight: bold;
+            align-items: center;
+            justify-content: center;
+            z-index: 150;
+            flex-direction: column;
+        }
+        #game-over-overlay.active {
+            display: flex;
+        }
+        #instructions {
+            background: #fff;
+            border: 2px solid #2E9DF7;
+            border-radius: 10px;
+            padding: 1rem 2rem;
+            margin: 1rem auto 1.5rem auto;
+            max-width: 420px;
+            color: #222;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(46,157,247,0.10);
+        }
+        #game-container {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        #sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            min-width: 180px;
+            max-width: 260px;
+            width: 100%;
+        }
+        #tetris {
+            max-width: 90vw;
+            height: auto;
+            width: 300px;
+            min-width: 180px;
+        }
+        @media (max-width: 900px) {
+            #game-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            #sidebar {
+                max-width: 100vw;
+                min-width: 0;
+                width: 100%;
+                align-items: center;
+            }
+        }
+        @media (max-width: 600px) {
+            #tetris {
+                width: 90vw;
+                min-width: 120px;
+                max-width: 98vw;
+            }
+            #sidebar {
+                max-width: 98vw;
+                padding: 0 2vw;
+            }
+            #instructions {
+                font-size: 0.95rem;
+                padding: 0.7rem 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="visually-hidden">Charity: water Pipe Tetris Game</h1>
+    <div id="loading-message">Loading Charity: water Tetris...</div>
+    <header>
+        <img src="img/cw_logo_horizontal.png" alt="Charity: water logo" style="max-width:220px; vertical-align:middle;">
+        <h1>Charity: water Pipe Tetris</h1>
+    </header>
+    <div id="instructions" tabindex="0">
+        <strong>How to Play:</strong><br>
+        Use <b>Arrow keys</b> to move and rotate pieces.<br>
+        <b>Space</b> to drop, <b>Enter</b> to restart after game over.<br>
+        Clear lines to deliver clean water and unlock fun facts!
+    </div>
+    <main>
+        <div id="game-container">
+            <canvas id="tetris" width="300" height="600" aria-label="Tetris game board" tabindex="0"></canvas>
+            <!-- Mobile Controls: Only visible on small screens -->
+            <div id="mobile-controls" style="display:none;flex-direction:row;justify-content:center;gap:1.2rem;margin:1.2rem 0 0 0;">
+                <button id="btn-left" aria-label="Move Left">&#8592;</button>
+                <button id="btn-rotate" aria-label="Rotate">&#8635;</button>
+                <button id="btn-right" aria-label="Move Right">&#8594;</button>
+                <button id="btn-drop" aria-label="Drop">&#8595;</button>
+            </div>
+            <div id="sidebar">
+                <button id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
+                <div id="score-label">Your Score</div>
+                <h2 id="water-delivered">Liters Delivered: 0</h2>
+                <div id="lines-to-next">Next Level in 8 lines</div>
+                <div id="level-display" style="background:#fff;border:2px solid #FFC907;border-radius:8px;padding:0.5rem 1.2rem;font-size:1.1rem;text-align:center;margin-bottom:1rem;">Level: 1</div>
+                <button id="pause-btn" aria-label="Pause game">Pause</button>
+                <button id="restart" aria-label="Restart game" tabindex="0">Restart</button>
+                <div id="next-piece">
+                    <h3>Next Piece</h3>
+                    <canvas id="next" width="100" height="100" aria-label="Next Tetris piece" tabindex="0"></canvas>
+                </div>
+                <div id="fact-section" style="background:#fff;border:2px solid #2E9DF7;border-radius:10px;padding:1rem 1.2rem;font-size:1rem;text-align:center;box-shadow:0 2px 8px rgba(46,157,247,0.10);margin-bottom:1rem;min-height:72px;display:flex;flex-direction:column;justify-content:center;">
+                    <strong>Charity: water Fact</strong>
+                    <div id="fact-rotator" style="margin-top:0.5rem;min-height:40px;display:flex;align-items:center;justify-content:center;"></div>
+                </div>
+            </div>
+        </div>
+        <div id="fact-popup" style="display:none;">
+            <p id="fact-text"></p>
+            <button id="close-fact" aria-label="Close fact popup" tabindex="0">OK</button>
+        </div>
+        <div id="game-over-overlay">
+            <div>Game Over!<br><span id="final-liters"></span></div>
+            <button id="overlay-restart" tabindex="0">Restart</button>
+        </div>
+        <div id="how-to-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+            <div style="background:#fff;padding:2rem 2.5rem;border-radius:16px;max-width:340px;text-align:center;box-shadow:0 4px 24px #2E9DF733;">
+                <h2>How to Play</h2>
+                <p>Use <b>Arrow keys</b> to move and rotate pieces.<br> <b>Space</b> to drop, <b>Enter</b> to restart after game over.<br>Clear lines to deliver clean water and unlock fun facts!<br><br>Watch out for mud blocks and level up for more challenge!</p>
+                <button id="close-how-to" style="margin-top:1rem;background:#2E9DF7;color:#fff;border:none;border-radius:8px;padding:0.6rem 1.8rem;font-size:1rem;cursor:pointer;font-weight:bold;">OK</button>
+            </div>
+        </div>
+        <div id="splash-effect" aria-hidden="true"></div>
+    </main>
+    <footer>
+        <p>Made for learning and fun &mdash; <a href="https://www.charitywater.org/" target="_blank" rel="noopener">Charity: water</a></p>
+    </footer>
+    <script>
+        // Hide loading message when page and scripts are ready
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loading-message').style.display = 'none';
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
