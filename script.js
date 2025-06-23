@@ -207,7 +207,7 @@ window.addEventListener('DOMContentLoaded', function() {
             board[pos.y][pos.x] = 9;
             liters = Math.max(0, liters - 100);
             deliveredDisplay.textContent = `Liters Delivered: ${liters}`;
-            showFact("Oh no! Mud block! -100 liters delivered.");
+            showMudSplatter();
             deliveredDisplay.classList.remove('score-up', 'score-down');
             deliveredDisplay.classList.add('score-down');
             setTimeout(() => deliveredDisplay.classList.remove('score-down'), 400);
