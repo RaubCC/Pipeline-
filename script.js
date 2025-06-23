@@ -128,18 +128,26 @@ window.addEventListener('DOMContentLoaded', function() {
         };
     }
     function drawBlock(x, y, color, ctx = context, index = null, rotation = 0) {
-        // For pipe pieces (I, O, T, S, Z, J, L), use pipes sprite sheet
+        // For pipe pieces (I, O, T, S, Z, J, L), use pipes sprite sheet if loaded
         // index: 1 = I, 2 = O, 3 = T, 4 = S, 5 = Z, 6 = J, 7 = L
         if (index >= 1 && index <= 7) {
-            // Sprite sheet: 7 blocks in a row, each 64x64px
-            // Map: 1=I, 2=O, 3=T, 4=S, 5=Z, 6=J, 7=L
+            // Only draw sprite if loaded, otherwise fallback to color
             const SPRITE_SIZE = 64;
             const spriteX = (index - 1) * SPRITE_SIZE;
-            ctx.drawImage(
-                pipesSprite,
-                spriteX, 0, SPRITE_SIZE, SPRITE_SIZE,
-                x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE
-            );
+            if (pipesSprite.complete && pipesSprite.naturalWidth > 0) {
+                ctx.drawImage(
+                    pipesSprite,
+                    spriteX, 0, SPRITE_SIZE, SPRITE_SIZE,
+                    x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE
+                );
+            } else {
+                // Fallback: draw colored block so piece is always visible
+                ctx.fillStyle = color || '#888';
+                ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                ctx.strokeStyle = "#222";
+                ctx.lineWidth   = 2;
+                ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            }
             return;
         }
         // Otherwise, use old block logic
