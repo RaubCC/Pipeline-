@@ -95,12 +95,6 @@ window.addEventListener('DOMContentLoaded', function() {
     // Preload mud image for mud block
     const mudImg = new window.Image();
     mudImg.src = 'img/Mud.png';
-    // Preload Tetris pieces sprite sheet
-    const tetrisSprite = new window.Image();
-    tetrisSprite.src = 'img/Tetris Pieces.png';
-    // Preload pipes sprite sheet
-    const pipesSprite = new window.Image();
-    pipesSprite.src = 'img/Pipes.png';
 
     // Show loading message until pipesSprite is loaded
     const loadingMsg = document.getElementById('loading-message');
@@ -128,30 +122,8 @@ window.addEventListener('DOMContentLoaded', function() {
         };
     }
     function drawBlock(x, y, color, ctx = context, index = null, rotation = 0) {
-        // For pipe pieces (I, O, T, S, Z, J, L), use pipes sprite sheet if loaded
-        // index: 1 = I, 2 = O, 3 = T, 4 = S, 5 = Z, 6 = J, 7 = L
-        if (index >= 1 && index <= 7) {
-            // Only draw sprite if loaded, otherwise fallback to color
-            const SPRITE_SIZE = 64;
-            const spriteX = (index - 1) * SPRITE_SIZE;
-            if (pipesSprite.complete && pipesSprite.naturalWidth > 0) {
-                ctx.drawImage(
-                    pipesSprite,
-                    spriteX, 0, SPRITE_SIZE, SPRITE_SIZE,
-                    x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE
-                );
-            } else {
-                // Fallback: draw colored block so piece is always visible
-                ctx.fillStyle = color || '#888';
-                ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-                ctx.strokeStyle = "#222";
-                ctx.lineWidth   = 2;
-                ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-            }
-            return;
-        }
-        // Otherwise, use old block logic
-        ctx.fillStyle = color;
+        // For all pieces, just draw a colored block (beginner-friendly)
+        ctx.fillStyle = color || '#888';
         ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         ctx.strokeStyle = "#222";
         ctx.lineWidth   = 2;
@@ -175,7 +147,6 @@ window.addEventListener('DOMContentLoaded', function() {
         }
         // Mud image icon
         if (index === 9) {
-            // Draw the mud image, centered in the block
             ctx.drawImage(
                 mudImg,
                 x * BLOCK_SIZE,
