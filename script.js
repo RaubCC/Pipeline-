@@ -1,5 +1,26 @@
 // Charity: water Pipe Tetris - Fun Edition
 
+// Difficulty settings for the game
+// These control drop speeds, mud block chance, and lines needed to level up
+const DIFFICULTY_SETTINGS = {
+    easy: {
+        dropSpeeds: [800, 600, 500, 400, 300], // Slower drop
+        mudChance: [0.05, 0.10, 0.18, 0.25, 0.35],
+        linesToNextLevel: 6, // Fewer lines per level
+    },
+    normal: {
+        dropSpeeds: [600, 450, 350, 250, 150], // Original speeds
+        mudChance: [0.10, 0.18, 0.28, 0.40, 0.55],
+        linesToNextLevel: 8,
+    },
+    hard: {
+        dropSpeeds: [400, 300, 200, 120, 80], // Faster
+        mudChance: [0.20, 0.30, 0.40, 0.55, 0.70], // More mud
+        linesToNextLevel: 10, // More lines per level
+    }
+};
+let currentDifficulty = 'normal';
+
 window.addEventListener('DOMContentLoaded', function() {
     // DOM elements
     const canvas = document.getElementById('tetris');
@@ -283,11 +304,9 @@ window.addEventListener('DOMContentLoaded', function() {
             if (level < 5) {
                 level++;
                 linesCleared = 0;
-                linesToNextLevel += 8;
-                if (level === 2) { mudChance = 0.18; dropSpeeds[1] = 450; }
-                if (level === 3) { mudChance = 0.28; dropSpeeds[2] = 350; }
-                if (level === 4) { mudChance = 0.40; dropSpeeds[3] = 250; }
-                if (level === 5) { mudChance = 0.55; dropSpeeds[4] = 150; }
+                linesToNextLevel += DIFFICULTY_SETTINGS[currentDifficulty].linesToNextLevel;
+                mudChance = DIFFICULTY_SETTINGS[currentDifficulty].mudChance[level - 1];
+                dropSpeeds = DIFFICULTY_SETTINGS[currentDifficulty].dropSpeeds;
                 showFact(`Level Up! Welcome to Level ${level}.`);
                 showConfetti();
                 updateLevelDisplay();
@@ -396,9 +415,11 @@ window.addEventListener('DOMContentLoaded', function() {
         liters = 0;
         linesCleared = 0;
         level = 1;
-        linesToNextLevel = 8;
-        mudChance = 0.10;
-        dropSpeeds = [600, 450, 350, 250, 150];
+        // Use difficulty settings selected by the player
+        const settings = DIFFICULTY_SETTINGS[currentDifficulty];
+        dropSpeeds = settings.dropSpeeds.slice(); // Copy the array for this game
+        mudChance = settings.mudChance[0]; // Start with the first mud chance
+        linesToNextLevel = settings.linesToNextLevel;
         board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
         current = randomTetromino();
         next = randomTetromino();
