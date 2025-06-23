@@ -1,14 +1,19 @@
 // Charity: water Pipe Tetris - Fun Edition
 
-// Sound effects for game events
+// Animation containers
+const bucketAnim = document.getElementById('bucket-animation');
+const bucketWater = document.getElementById('bucket-water');
+const jerryCanAnim = document.getElementById('jerrycan-bonus');
+const mudSplatterAnim = document.getElementById('mud-splatter');
+
+// Sound effects — files should be in a local 'sounds/' folder:
 const sounds = {
-    lineClear: new Audio('/mnt/data/water-splash-46402.mp3'),         // Line clear (splash)
-    jerryCan: new Audio('/mnt/data/game-bonus-2-294436.mp3'),         // Jerry Can bonus
-    mudSplat: new Audio('/mnt/data/cartoon-splat-6086.mp3'),          // Mud block
-    levelUp: new Audio('/mnt/data/game-bonus-2-294436.mp3'),          // Level up (re-use bonus)
-    gameOver: new Audio('/mnt/data/game-over-arcade-6435.mp3'),       // Game over
-    pieceDrop: new Audio('/mnt/data/game-start-6104.mp3'),            // Piece drop (optional, or use for game start)
-    start: new Audio('/mnt/data/game-start-6104.mp3')                 // Game start
+    lineClear: new Audio('sounds/water-splash-46402.mp3'),
+    jerryCan: new Audio('sounds/game-bonus-2-294436.mp3'),
+    mudSplat: new Audio('sounds/cartoon-splat-6086.mp3'),
+    levelUp: new Audio('sounds/game-bonus-2-294436.mp3'),
+    gameOver: new Audio('sounds/game-over-arcade-6435.mp3'),
+    start: new Audio('sounds/game-start-6104.mp3')
 };
 for (const s in sounds) sounds[s].preload = 'auto';
 
@@ -56,12 +61,6 @@ window.addEventListener('DOMContentLoaded', function() {
     const howToModal = document.getElementById('how-to-modal');
     const closeHowTo = document.getElementById('close-how-to');
     const sidebarToggle = document.getElementById('sidebar-toggle');
-
-    // Jerrycan bonus animation element
-    const jerryCanAnim = document.getElementById('jerrycan-bonus');
-
-    // Mud splatter animation element
-    const mudSplatterAnim = document.getElementById('mud-splatter');
 
     // Game constants
     const ROWS = 20, COLS = 10, BLOCK_SIZE = 30;
