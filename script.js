@@ -12,31 +12,6 @@ const btnRotate = document.getElementById('btn-rotate');
 const btnDrop = document.getElementById('btn-drop');
 const difficultySelect = document.getElementById('difficulty');
 
-// === SOUNDS ===
-// Sound effects — files should be in a local 'sounds/' folder:
-const sounds = {
-    lineClear: new Audio('sounds/water-splash-46402.mp3'),
-    jerryCan: new Audio('sounds/game-bonus-2-294436.mp3'),
-    mudSplat: new Audio('sounds/cartoon-splat-6086.mp3'),
-    levelUp: new Audio('sounds/game-bonus-2-294436.mp3'),
-    gameOver: new Audio('sounds/game-over-arcade-6435.mp3'),
-    start: new Audio('sounds/game-start-6104.mp3')
-};
-for (const s in sounds) sounds[s].preload = 'auto';
-let soundOn = true;
-
-// Helper function to play a sound safely
-function playSound(sound) {
-    if (soundOn && sound) {
-        try {
-            sound.currentTime = 0;
-            sound.play();
-        } catch (e) {
-            // Do nothing (browser blocked)
-        }
-    }
-}
-
 // Difficulty settings for the game
 // These control drop speeds, mud block chance, and lines needed to level up
 const DIFFICULTY_SETTINGS = {
@@ -226,7 +201,6 @@ window.addEventListener('DOMContentLoaded', function() {
         // Jerry Can block logic
         if (current.index === 8) {
             // Play sound and show animation for Jerry Can bonus first
-            playSound(sounds.jerryCan);
             showJerryCanBonus();
             // Jerry Can: clear this row instantly and double liters
             let clearRow = pos.y;
@@ -237,7 +211,6 @@ window.addEventListener('DOMContentLoaded', function() {
             }
             liters += 400;
         } else if (current.index === 9) {
-            playSound(sounds.mudSplat);
             // Mud block: place on board, reduce liters
             board[pos.y][pos.x] = 9;
             liters = Math.max(0, liters - 100);
@@ -330,7 +303,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
     function updateLiters(lines) {
         if (lines) {
-            playSound(sounds.lineClear);  // On line clear
             showBucketFill(lines);
             showSplash();
             let litersOld = liters;
@@ -360,7 +332,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 updateLevelDisplay();
             }
         }
-        if (levelUp) playSound(sounds.levelUp);
+        if (levelUp) ;
     }
     function updateLinesToNext() {
         const left = Math.max(0, linesToNextLevel - linesCleared);
@@ -396,7 +368,6 @@ window.addEventListener('DOMContentLoaded', function() {
                 resetTetromino();
                 if (!validMove()) {
                     // Play the game over sound if sound is on
-                    playSound(sounds.gameOver);
                     showGameOverOverlay();
                     gameOver = true;
                     return;
@@ -477,7 +448,6 @@ window.addEventListener('DOMContentLoaded', function() {
     // });
 
     function startGame() {
-        playSound(sounds.start);      // On game start
         liters = 0;
         linesCleared = 0;
         level = 1;
@@ -640,9 +610,4 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Start the game
     startGame();
-
-    document.getElementById('toggle-sound').onclick = function() {
-        soundOn = !soundOn;
-        this.textContent = soundOn ? "🔊 Sound: On" : "🔇 Sound: Off";
-    };
 });
