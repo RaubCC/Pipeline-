@@ -11,6 +11,8 @@ const btnRight = document.getElementById('btn-right');
 const btnRotate = document.getElementById('btn-rotate');
 const btnDrop = document.getElementById('btn-drop');
 const difficultySelect = document.getElementById('difficulty');
+const waterMeter = document.getElementById('water-meter');
+const waterFill = document.getElementById('fill');
 
 // Difficulty settings for the game
 // These control drop speeds, mud block chance, and lines needed to level up
@@ -215,6 +217,7 @@ window.addEventListener('DOMContentLoaded', function() {
             board[pos.y][pos.x] = 9;
             liters = Math.max(0, liters - 100);
             deliveredDisplay.textContent = `Liters Delivered: ${liters}`;
+            updateWaterMeter(liters);
             showMudSplatter();
             deliveredDisplay.classList.remove('score-up', 'score-down');
             deliveredDisplay.classList.add('score-down');
@@ -253,6 +256,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 val += up ? step : -step;
                 if ((up && val > newVal) || (!up && val < newVal)) val = newVal;
                 deliveredDisplay.textContent = `Liters Delivered: ${val}`;
+                updateWaterMeter(val);
                 requestAnimationFrame(tick);
             } else {
                 deliveredDisplay.textContent = `Liters Delivered: ${newVal}`;
@@ -466,6 +470,7 @@ window.addEventListener('DOMContentLoaded', function() {
         sidebar.classList.remove('collapsed');
         drawNext();
         deliveredDisplay.textContent = `Liters Delivered: 0`;
+        updateWaterMeter(0);
         updateLevelDisplay();
         updateLinesToNext();
         dropStart = Date.now();
@@ -606,6 +611,22 @@ window.addEventListener('DOMContentLoaded', function() {
         void mudSplatterAnim.children[0].offsetWidth;
         mudSplatterAnim.children[0].style.animation = 'mud-fade 0.5s cubic-bezier(.64,0,.34,1) forwards';
         setTimeout(() => { mudSplatterAnim.style.display = 'none'; }, 520);
+    }
+
+    // Helper to update the water meter bar
+    function updateWaterMeter(liters) {
+        // For beginners: 0 liters = empty, 2000 liters = full bar
+        const maxLiters = 2000;
+        let percent = Math.min(100, Math.round((liters / maxLiters) * 100));
+        if (waterFill) {
+            waterFill.style.width = `${percent}%`;
+        }
+    }
+
+    // Helper function to animate a drop icon with a squirt/ripple effect
+    function popDrop(el) {
+      el.classList.add('active');
+      setTimeout(() => el.classList.remove('active'), 200);
     }
 
     // Start the game

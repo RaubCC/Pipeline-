@@ -8,6 +8,10 @@
     <link rel="icon" type="image/png" href="img/cw_logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+          --cw-blue: #2BB673;
+          --cw-white: #fff;
+        }
         .visually-hidden {
             position: absolute;
             width: 1px;
@@ -110,6 +114,33 @@
           70% { transform:translateY(0) scale(0.95);}
           100% { transform:translateY(80px) scale(0.7); opacity:0;}
         }
+        #water-meter {
+          width: 100%;
+          max-width: 220px;
+          height: 22px;
+          background: var(--cw-white);
+          border: 2px solid var(--cw-blue);
+          border-radius: 12px;
+          margin: 0.5rem auto 0.7rem auto;
+          box-shadow: 0 2px 8px rgba(43,182,115,0.08);
+          overflow: hidden;
+          position: relative;
+        }
+        #water-meter #fill {
+          height: 100%;
+          width: 0%;
+          background: linear-gradient(90deg, var(--cw-blue) 80%, #2E9DF7 100%);
+          border-radius: 12px 0 0 12px;
+          transition: width 0.5s cubic-bezier(.4,1.4,.6,1);
+        }
+        /* Drop icon animation for squirt/ripple effect */
+        .drop {
+          display: inline-block;
+          transition: transform 0.2s ease;
+        }
+        .drop.active {
+          transform: scale(1.2) translateY(-5px);
+        }
     </style>
 </head>
 <body>
@@ -148,6 +179,7 @@
                 <button id="sidebar-toggle" aria-label="Toggle sidebar">☰</button>
                 <div id="score-label">Your Score</div>
                 <h2 id="water-delivered">Liters Delivered: 0</h2>
+                <div id="water-meter"><div id="fill"></div></div>
                 <div id="lines-to-next">Next Level in 8 lines</div>
                 <div id="level-display" style="background:#fff;border:2px solid #FFC907;border-radius:8px;padding:0.5rem 1.2rem;font-size:1.1rem;text-align:center;margin-bottom:1rem;">Level: 1</div>
                 <button id="pause-btn" aria-label="Pause game">Pause</button>
