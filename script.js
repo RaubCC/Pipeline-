@@ -204,6 +204,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     function mergeTetromino() {
         if (current.index === 8) {
+            if (sounds.jerryCan) { sounds.jerryCan.currentTime = 0; sounds.jerryCan.play(); }
             // Jerry Can: clear this row instantly and double liters
             let clearRow = pos.y;
             for (let x = 0; x < COLS; x++) {
@@ -212,6 +213,7 @@ window.addEventListener('DOMContentLoaded', function() {
             liters += 400;
             showJerryCanBonus(); // Show the jerrycan bonus animation
         } else if (current.index === 9) {
+            if (sounds.mudSplat) { sounds.mudSplat.currentTime = 0; sounds.mudSplat.play(); }
             // Mud block: place on board, reduce liters
             board[pos.y][pos.x] = 9;
             liters = Math.max(0, liters - 100);
@@ -325,6 +327,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 mudChance = DIFFICULTY_SETTINGS[currentDifficulty].mudChance[level - 1];
                 dropSpeeds = DIFFICULTY_SETTINGS[currentDifficulty].dropSpeeds;
                 showFact(`Level Up! Welcome to Level ${level}.`);
+                if (sounds.levelUp) { sounds.levelUp.currentTime = 0; sounds.levelUp.play(); }
                 showConfetti();
                 updateLevelDisplay();
             }
@@ -363,6 +366,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 updateLiters(lines);
                 resetTetromino();
                 if (!validMove()) {
+                    if (sounds.gameOver) { sounds.gameOver.currentTime = 0; sounds.gameOver.play(); }
                     showGameOverOverlay();
                     gameOver = true;
                     return;
