@@ -1,5 +1,17 @@
 // Charity: water Pipe Tetris - Fun Edition
 
+// Sound effects for game events
+const sounds = {
+    lineClear: new Audio('/mnt/data/water-splash-46402.mp3'),         // Line clear (splash)
+    jerryCan: new Audio('/mnt/data/game-bonus-2-294436.mp3'),         // Jerry Can bonus
+    mudSplat: new Audio('/mnt/data/cartoon-splat-6086.mp3'),          // Mud block
+    levelUp: new Audio('/mnt/data/game-bonus-2-294436.mp3'),          // Level up (re-use bonus)
+    gameOver: new Audio('/mnt/data/game-over-arcade-6435.mp3'),       // Game over
+    pieceDrop: new Audio('/mnt/data/game-start-6104.mp3'),            // Piece drop (optional, or use for game start)
+    start: new Audio('/mnt/data/game-start-6104.mp3')                 // Game start
+};
+for (const s in sounds) sounds[s].preload = 'auto';
+
 // Difficulty settings for the game
 // These control drop speeds, mud block chance, and lines needed to level up
 const DIFFICULTY_SETTINGS = {
@@ -292,6 +304,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     function updateLiters(lines) {
         if (lines) {
+            if (sounds.lineClear) { sounds.lineClear.currentTime = 0; sounds.lineClear.play(); }
             showSplash();
             showBucketFill(lines);
             let litersOld = liters;
@@ -424,6 +437,7 @@ window.addEventListener('DOMContentLoaded', function() {
     // });
 
     function startGame() {
+        if (sounds.start) { sounds.start.currentTime = 0; sounds.start.play(); }
         liters = 0;
         linesCleared = 0;
         level = 1;
