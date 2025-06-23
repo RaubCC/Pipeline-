@@ -367,26 +367,34 @@ window.addEventListener('DOMContentLoaded', function() {
         drawNext();
     }
     function handleKey(e) {
-        if (gameOver && e.key !== "Enter") return;
-        if (e.key === "ArrowLeft" && validMove(-1, 0)) pos.x--;
-        if (e.key === "ArrowRight" && validMove(1, 0)) pos.x++;
-        if (e.key === "ArrowDown" && validMove(0, 1)) pos.y++;
-        if (e.key === "ArrowUp") {
+        if (gameOver && e.key !== "Enter" && e.key !== "w" && e.key !== "W") return;
+
+        const key = e.key.toLowerCase();
+
+        if (key === "arrowleft" || key === "a") {
+            if (validMove(-1, 0)) pos.x--;
+        }
+        if (key === "arrowright" || key === "d") {
+            if (validMove(1, 0)) pos.x++;
+        }
+        if (key === "arrowdown" || key === "s") {
+            if (validMove(0, 1)) pos.y++;
+        }
+        if (key === "arrowup" || key === "w") {
             const rotated = rotate(current.shape);
             if (validMove(0, 0, rotated)) current.shape = rotated;
         }
-        if (e.key === " ") {
+        if (key === " ") {
             while (validMove(0, 1)) pos.y++;
         }
-        if (e.key === "Enter" && gameOver) {
+        if ((key === "enter") && gameOver) {
             startGame();
-            // Removed: factPopup.style.display = 'none';
         }
         drawBoard();
     }
     document.addEventListener('keydown', function(e) {
-        // Prevent arrow keys and space from scrolling the page
-        if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", " ", "Spacebar"].includes(e.key)) {
+        // Prevent arrow keys, space, and WASD from scrolling the page
+        if (["arrowleft", "arrowright", "arrowup", "arrowdown", " ", "spacebar", "a", "d", "w", "s"].includes(e.key.toLowerCase())) {
             e.preventDefault();
         }
         handleKey(e);
