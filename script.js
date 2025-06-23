@@ -180,14 +180,11 @@ window.addEventListener('DOMContentLoaded', function() {
     }
     // Define the function first
     function showFact(fact) {
-        // Show a fact in the popup or sidebar
+        // Only use the sidebar, never popups
         if (fact) {
-            factText.textContent = fact;
-            factPopup.style.display = 'block';
-            paused = true; // Pause the game while popup is visible
-            pauseBtn.textContent = 'Resume';
+            // Show it in sidebar rotator area instead
+            factRotator.textContent = fact;
         } else {
-            // Show a random rotating fact in the sidebar
             factRotator.textContent = WATER_FACTS[factIndex];
             factIndex = (factIndex + 1) % WATER_FACTS.length;
         }
