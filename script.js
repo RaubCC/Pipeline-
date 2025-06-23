@@ -694,4 +694,43 @@ window.addEventListener('DOMContentLoaded', function() {
       el.classList.add('active');
       setTimeout(() => el.classList.remove('active'), 200);
     }
+
+    // === DOM PIPE BLOCK DEMO FOR BEGINNERS ===
+    // This is a simple demo to show how to render pipe blocks using DOM and images.
+    // It does not replace the canvas game, but helps beginners understand DOM-based rendering.
+    window.renderPipeBoardDemo = function() {
+      // Example 2D array of pipe types ("straight", "corner", "t", "cross", or null)
+      const demoBoard = [
+        ["straight", "straight", "corner", null, null],
+        [null, "t", "straight", "corner", null],
+        ["cross", null, "straight", null, "corner"],
+        ["corner", "straight", null, "t", null],
+        [null, null, "corner", "straight", "straight"]
+      ];
+      const boardDiv = document.getElementById('board');
+      if (!boardDiv) return;
+      boardDiv.innerHTML = '';
+      for (let row = 0; row < demoBoard.length; row++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.style.display = 'flex';
+        for (let col = 0; col < demoBoard[row].length; col++) {
+          const type = demoBoard[row][col];
+          const block = document.createElement('div');
+          block.className = 'block';
+          if (type === 'straight') {
+            block.style.backgroundImage = "url('img/pipe-straight.png')";
+          } else if (type === 'corner') {
+            block.style.backgroundImage = "url('img/pipe-corner.png')";
+          } else if (type === 't') {
+            block.style.backgroundImage = "url('img/pipe-t.png')";
+          } else if (type === 'cross') {
+            block.style.backgroundImage = "url('img/pipe-cross.png')";
+          } else {
+            block.style.backgroundColor = '#eee';
+          }
+          rowDiv.appendChild(block);
+        }
+        boardDiv.appendChild(rowDiv);
+      }
+    }
 });

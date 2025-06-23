@@ -432,3 +432,18 @@ h1, h2, h3, #water-delivered, #score-label, #next-piece, #level-display, footer 
     font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
     letter-spacing: 0.5px;
 }
+
+#board {
+  margin: 0 auto 2rem auto;
+}
+#board-demo-btn {
+  margin: 1rem auto;
+  display: block;
+}
+.block {
+  width: 30px;
+  height: 30px;
+  background-size: cover;
+  border: 1px solid #222;
+  display: inline-block;
+}
