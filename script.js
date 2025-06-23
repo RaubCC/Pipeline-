@@ -205,19 +205,14 @@ window.addEventListener('DOMContentLoaded', function() {
     function mergeTetromino() {
         // Jerry Can block logic
         if (current.index === 8) {
-            // Play the Jerry Can sound if sound is on
-            if (soundOn && sounds.jerryCan) {
-                sounds.jerryCan.currentTime = 0;
-                sounds.jerryCan.play();
-            }
-            // Show the Jerry Can bonus animation
+            // Play sound and show animation for Jerry Can bonus first
+            if (soundOn && sounds.jerryCan) { sounds.jerryCan.currentTime = 0; sounds.jerryCan.play(); }
             showJerryCanBonus();
-            // Clear the row where the Jerry Can landed
+            // Jerry Can: clear this row instantly and double liters
             let clearRow = pos.y;
             for (let x = 0; x < COLS; x++) {
                 board[clearRow][x] = 0;
             }
-            // Add extra liters for the Jerry Can
             liters += 400;
         } else if (current.index === 9) {
             if (soundOn && sounds.mudSplat) { sounds.mudSplat.currentTime = 0; sounds.mudSplat.play(); }
