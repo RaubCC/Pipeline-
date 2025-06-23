@@ -38,6 +38,9 @@ window.addEventListener('DOMContentLoaded', function() {
     const factRotator = document.getElementById('fact-rotator');
     const btnLeft = document.getElementById('btn-left');
     const btnRight = document.getElementById('btn-right');
+    // Bucket animation elements
+    const bucketAnim = document.getElementById('bucket-animation');
+    const bucketWater = document.getElementById('bucket-water');
     const btnRotate = document.getElementById('btn-rotate');
     const btnDrop = document.getElementById('btn-drop');
     const linesToNext = document.getElementById('lines-to-next');
@@ -527,6 +530,22 @@ window.addEventListener('DOMContentLoaded', function() {
         if (levelDisplay) {
             levelDisplay.textContent = `Level: ${level}`;
         }
+    }
+
+    // Show the bucket fill animation when lines are cleared
+    function showBucketFill(lines) {
+        if (!bucketAnim || !bucketWater) return;
+        bucketAnim.style.display = 'block';
+        bucketWater.style.height = '0';
+        // Animate fill based on lines cleared (max fill for 4 lines)
+        setTimeout(() => {
+            bucketWater.style.height = `${Math.min(56, 16 * lines)}px`;
+        }, 50);
+        // Hide after animation
+        setTimeout(() => {
+            bucketAnim.style.display = 'none';
+            bucketWater.style.height = '0';
+        }, 950);
     }
 
     // Start the game
