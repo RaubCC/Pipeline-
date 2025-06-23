@@ -92,6 +92,10 @@ window.addEventListener('DOMContentLoaded', function() {
     COLORS.push('#8B5C2A');
     PIECE_NAMES.push('Mud Block');
 
+    // Preload mud image for mud block
+    const mudImg = new window.Image();
+    mudImg.src = 'img/Mud.png';
+
     // Game state
     let board, current, next, pos, liters, dropStart, gameOver, linesCleared, level, linesToNextLevel, mudChance, dropSpeeds, paused;
 
@@ -156,17 +160,16 @@ window.addEventListener('DOMContentLoaded', function() {
                 BLOCK_SIZE * 0.25
             );
         }
-        // Mud-ball icon
+        // Mud image icon
         if (index === 9) {
-            ctx.fillStyle = '#6B3E14';
-            ctx.beginPath();
-            ctx.arc(
-                x * BLOCK_SIZE + BLOCK_SIZE / 2,
-                y * BLOCK_SIZE + BLOCK_SIZE / 2,
-                BLOCK_SIZE / 4,
-                0, 2 * Math.PI
+            // Draw the mud image, centered in the block
+            ctx.drawImage(
+                mudImg,
+                x * BLOCK_SIZE,
+                y * BLOCK_SIZE,
+                BLOCK_SIZE,
+                BLOCK_SIZE
             );
-            ctx.fill();
         }
     }
     // Draw a pipe segment with end-caps, gradient shine, and outlines
