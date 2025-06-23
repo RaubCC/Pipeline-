@@ -103,6 +103,12 @@
                 padding: 0.7rem 0.5rem;
             }
         }
+        @keyframes jerry-bounce {
+          0% { transform:translateY(0) scale(1); opacity: 0.8;}
+          30% { transform:translateY(-36px) scale(1.08);}
+          70% { transform:translateY(0) scale(0.95);}
+          100% { transform:translateY(80px) scale(0.7); opacity:0;}
+        }
     </style>
 </head>
 <body>
@@ -177,6 +183,14 @@
             <img src="img/jerry_can.png" alt="Jerry Can" id="bucket-img" style="width:90px;height:auto;filter:drop-shadow(0 2px 12px #FFC907aa);">
             <div id="bucket-water" style="position:absolute;bottom:17px;left:17px;width:56px;height:0;background:#2E9DF7;border-radius:0 0 18px 18px;transition:height 0.6s cubic-bezier(.4,2,.6,1);opacity:0.80;"></div>
           </div>
+        </div>
+        <!-- Jerrycan bonus animation container -->
+        <div id="jerrycan-bonus" style="position:fixed;top:40vh;left:50vw;transform:translate(-50%,-50%);z-index:402;pointer-events:none;display:none;">
+          <img src="img/jerry_can.png" alt="Jerry Can" style="width:88px;height:auto;animation:jerry-bounce 0.7s cubic-bezier(.34,1.8,.64,1) forwards;">
+        </div>
+        <!-- Mud splatter animation container -->
+        <div id="mud-splatter" style="position:fixed;top:52vh;left:50vw;transform:translate(-50%,-50%);z-index:402;pointer-events:none;display:none;">
+          <img src="img/mud_splatter.png" alt="Mud splatter" style="width:112px;height:auto;animation:mud-fade 0.5s cubic-bezier(.64,0,.34,1) forwards;">
         </div>
     </main>
     <footer>

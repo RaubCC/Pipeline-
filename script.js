@@ -38,15 +38,18 @@ window.addEventListener('DOMContentLoaded', function() {
     const factRotator = document.getElementById('fact-rotator');
     const btnLeft = document.getElementById('btn-left');
     const btnRight = document.getElementById('btn-right');
-    // Bucket animation elements
-    const bucketAnim = document.getElementById('bucket-animation');
-    const bucketWater = document.getElementById('bucket-water');
     const btnRotate = document.getElementById('btn-rotate');
     const btnDrop = document.getElementById('btn-drop');
     const linesToNext = document.getElementById('lines-to-next');
     const howToModal = document.getElementById('how-to-modal');
     const closeHowTo = document.getElementById('close-how-to');
     const sidebarToggle = document.getElementById('sidebar-toggle');
+
+    // Jerrycan bonus animation element
+    const jerryCanAnim = document.getElementById('jerrycan-bonus');
+
+    // Mud splatter animation element
+    const mudSplatterAnim = document.getElementById('mud-splatter');
 
     // Game constants
     const ROWS = 20, COLS = 10, BLOCK_SIZE = 30;
@@ -198,7 +201,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 board[clearRow][x] = 0;
             }
             liters += 400;
-            showFact("JERRY CAN POWER! Doubled liters for this row!");
+            showJerryCanBonus(); // Show the jerrycan bonus animation
         } else if (current.index === 9) {
             // Mud block: place on board, reduce liters
             board[pos.y][pos.x] = 9;
@@ -547,6 +550,17 @@ window.addEventListener('DOMContentLoaded', function() {
             bucketAnim.style.display = 'none';
             bucketWater.style.height = '0';
         }, 950);
+    }
+
+    // Show the jerrycan bonus animation
+    function showJerryCanBonus() {
+        if (!jerryCanAnim) return;
+        jerryCanAnim.style.display = 'block';
+        // Restart animation by re-adding the element (force reflow)
+        jerryCanAnim.children[0].style.animation = 'none';
+        void jerryCanAnim.children[0].offsetWidth;
+        jerryCanAnim.children[0].style.animation = 'jerry-bounce 0.7s cubic-bezier(.34,1.8,.64,1) forwards';
+        setTimeout(() => { jerryCanAnim.style.display = 'none'; }, 720);
     }
 
     // Start the game
