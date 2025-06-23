@@ -104,6 +104,7 @@ window.addEventListener('DOMContentLoaded', function() {
     // Game state
     let board, current, next, pos, liters, dropStart, gameOver, linesCleared, level, linesToNextLevel, mudChance, dropSpeeds, paused;
     let factIndex = 0;
+    let soundOn = true;
 
     // Utility
     function randomTetromino() {
@@ -204,7 +205,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     function mergeTetromino() {
         if (current.index === 8) {
-            if (sounds.jerryCan) { sounds.jerryCan.currentTime = 0; sounds.jerryCan.play(); }
+            if (soundOn && sounds.jerryCan) { sounds.jerryCan.currentTime = 0; sounds.jerryCan.play(); }
             // Jerry Can: clear this row instantly and double liters
             let clearRow = pos.y;
             for (let x = 0; x < COLS; x++) {
@@ -213,7 +214,7 @@ window.addEventListener('DOMContentLoaded', function() {
             liters += 400;
             showJerryCanBonus(); // Show the jerrycan bonus animation
         } else if (current.index === 9) {
-            if (sounds.mudSplat) { sounds.mudSplat.currentTime = 0; sounds.mudSplat.play(); }
+            if (soundOn && sounds.mudSplat) { sounds.mudSplat.currentTime = 0; sounds.mudSplat.play(); }
             // Mud block: place on board, reduce liters
             board[pos.y][pos.x] = 9;
             liters = Math.max(0, liters - 100);
@@ -306,7 +307,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     function updateLiters(lines) {
         if (lines) {
-            if (sounds.lineClear) { sounds.lineClear.currentTime = 0; sounds.lineClear.play(); }
+            if (soundOn && sounds.lineClear) { sounds.lineClear.currentTime = 0; sounds.lineClear.play(); }
             showSplash();
             showBucketFill(lines);
             let litersOld = liters;
@@ -327,7 +328,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 mudChance = DIFFICULTY_SETTINGS[currentDifficulty].mudChance[level - 1];
                 dropSpeeds = DIFFICULTY_SETTINGS[currentDifficulty].dropSpeeds;
                 showFact(`Level Up! Welcome to Level ${level}.`);
-                if (sounds.levelUp) { sounds.levelUp.currentTime = 0; sounds.levelUp.play(); }
+                if (soundOn && sounds.levelUp) { sounds.levelUp.currentTime = 0; sounds.levelUp.play(); }
                 showConfetti();
                 updateLevelDisplay();
             }
@@ -366,7 +367,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 updateLiters(lines);
                 resetTetromino();
                 if (!validMove()) {
-                    if (sounds.gameOver) { sounds.gameOver.currentTime = 0; sounds.gameOver.play(); }
+                    if (soundOn && sounds.gameOver) { sounds.gameOver.currentTime = 0; sounds.gameOver.play(); }
                     showGameOverOverlay();
                     gameOver = true;
                     return;
@@ -441,7 +442,7 @@ window.addEventListener('DOMContentLoaded', function() {
     // });
 
     function startGame() {
-        if (sounds.start) { sounds.start.currentTime = 0; sounds.start.play(); }
+        if (soundOn && sounds.start) { sounds.start.currentTime = 0; sounds.start.play(); }
         liters = 0;
         linesCleared = 0;
         level = 1;
@@ -598,4 +599,9 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Start the game
     startGame();
+
+    document.getElementById('toggle-sound').onclick = function() {
+        soundOn = !soundOn;
+        this.textContent = soundOn ? "🔊 Sound: On" : "🔇 Sound: Off";
+    };
 });
