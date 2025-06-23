@@ -13,6 +13,7 @@ const btnDrop = document.getElementById('btn-drop');
 const difficultySelect = document.getElementById('difficulty');
 const waterMeter = document.getElementById('water-meter');
 const waterFill = document.getElementById('fill');
+const linesToNext = document.getElementById('lines-to-next'); // Add this line
 
 // Difficulty settings for the game
 // These control drop speeds, mud block chance, and lines needed to level up
@@ -628,6 +629,14 @@ window.addEventListener('DOMContentLoaded', function() {
         if (gameOverOverlay) {
             gameOverOverlay.style.display = 'none';
             gameOverOverlay.classList.remove('active');
+        }
+    }
+
+    // Add this function so the game does not crash
+    function showGameOverOverlay() {
+        if (gameOverOverlay) {
+            gameOverOverlay.style.display = 'flex';
+            gameOverOverlay.classList.add('active');
         }
     }
 
