@@ -95,6 +95,12 @@ window.addEventListener('DOMContentLoaded', function() {
     // Preload mud image for mud block
     const mudImg = new window.Image();
     mudImg.src = 'img/Mud.png';
+    // Preload Tetris pieces sprite sheet
+    const tetrisSprite = new window.Image();
+    tetrisSprite.src = 'img/Tetris Pieces.png';
+    // Preload pipes sprite sheet
+    const pipesSprite = new window.Image();
+    pipesSprite.src = 'img/Pipes.png';
 
     // Game state
     let board, current, next, pos, liters, dropStart, gameOver, linesCleared, level, linesToNextLevel, mudChance, dropSpeeds, paused;
@@ -119,22 +125,18 @@ window.addEventListener('DOMContentLoaded', function() {
         };
     }
     function drawBlock(x, y, color, ctx = context, index = null, rotation = 0) {
-        // For pipe pieces (I, O, T, S, Z, J, L), use drawPipeSegment
+        // For pipe pieces (I, O, T, S, Z, J, L), use pipes sprite sheet
         // index: 1 = I, 2 = O, 3 = T, 4 = S, 5 = Z, 6 = J, 7 = L
         if (index >= 1 && index <= 7) {
-            // For I-pipe (index 1), horizontal or vertical
-            let rot = 0;
-            if (index === 1) {
-                // I-pipe: horizontal if shape is 1x4, vertical if 4x1
-                rot = (current && current.shape && current.shape.length > 1) ? 1 : 0;
-            } else if (index === 6) {
-                // J-pipe: try to guess rotation (simple, for demo)
-                rot = 3;
-            } else if (index === 7) {
-                // L-pipe: try to guess rotation (simple, for demo)
-                rot = 1;
-            }
-            drawPipeSegment(ctx, x, y, rot);
+            // Sprite sheet: 7 blocks in a row, each 64x64px
+            // Map: 1=I, 2=O, 3=T, 4=S, 5=Z, 6=J, 7=L
+            const SPRITE_SIZE = 64;
+            const spriteX = (index - 1) * SPRITE_SIZE;
+            ctx.drawImage(
+                pipesSprite,
+                spriteX, 0, SPRITE_SIZE, SPRITE_SIZE,
+                x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE
+            );
             return;
         }
         // Otherwise, use old block logic
