@@ -76,12 +76,36 @@ header {
 }
 
 #next-piece {
-    background: #fff;
-    border: 2px solid #2E9DF7;
-    border-radius: 12px;
-    padding: 1rem;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(46,157,247,0.10);
+  width: 100%;
+  max-width: 180px;
+  margin: 0 auto 1rem auto;
+  text-align: center;
+  background: #f7fafc;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(46,157,247,0.08);
+  padding: 0.5rem 0.5rem 1rem 0.5rem;
+}
+
+#next {
+  display: block;
+  margin: 0 auto;
+  background: #e6f7ff;
+  border-radius: 8px;
+  border: 2px solid #2E9DF7;
+  width: 160px !important;
+  height: 120px !important;
+}
+
+@media (max-width: 600px) {
+  #next-piece {
+    max-width: 98vw;
+    padding: 0.3rem 0.2rem 0.7rem 0.2rem;
+  }
+  #next {
+    width: 98vw !important;
+    max-width: 98vw !important;
+    height: 80px !important;
+  }
 }
 
 #restart {
