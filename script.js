@@ -49,6 +49,8 @@ window.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.getElementById('sidebar');
     const levelDisplay = document.getElementById('level-display');
     const overlayRestart = document.getElementById('overlay-restart');
+    const howToModal = document.getElementById('how-to-modal');
+    const closeHowTo = document.getElementById('close-how-to');
     let factIndex = 0;
 
     // Game constants
