@@ -380,7 +380,7 @@ window.addEventListener('DOMContentLoaded', function() {
         }
         if (e.key === "Enter" && gameOver) {
             startGame();
-            factPopup.style.display = 'none';
+            // Removed: factPopup.style.display = 'none';
         }
         drawBoard();
     }
@@ -407,13 +407,13 @@ window.addEventListener('DOMContentLoaded', function() {
         howToModal.style.display = 'none';
     };
 
-    // Allow user to close the fact popup and return to the game
-    closeFact.addEventListener('click', function() {
-        factPopup.style.display = 'none';
-        paused = false; // Resume the game
-        pauseBtn.textContent = 'Pause';
-        drop(); // Resume the drop loop if needed
-    });
+    // Removed factPopup close logic, since popup is no longer used
+    // closeFact.addEventListener('click', function() {
+    //     factPopup.style.display = 'none';
+    //     paused = false; // Resume the game
+    //     pauseBtn.textContent = 'Pause';
+    //     drop(); // Resume the drop loop if needed
+    // });
 
     function startGame() {
         liters = 0;
