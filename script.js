@@ -203,15 +203,22 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     function mergeTetromino() {
+        // Jerry Can block logic
         if (current.index === 8) {
-            if (soundOn && sounds.jerryCan) { sounds.jerryCan.currentTime = 0; sounds.jerryCan.play(); }
-            // Jerry Can: clear this row instantly and double liters
+            // Play the Jerry Can sound if sound is on
+            if (soundOn && sounds.jerryCan) {
+                sounds.jerryCan.currentTime = 0;
+                sounds.jerryCan.play();
+            }
+            // Show the Jerry Can bonus animation
+            showJerryCanBonus();
+            // Clear the row where the Jerry Can landed
             let clearRow = pos.y;
             for (let x = 0; x < COLS; x++) {
                 board[clearRow][x] = 0;
             }
+            // Add extra liters for the Jerry Can
             liters += 400;
-            showJerryCanBonus(); // Show the jerrycan bonus animation
         } else if (current.index === 9) {
             if (soundOn && sounds.mudSplat) { sounds.mudSplat.currentTime = 0; sounds.mudSplat.play(); }
             // Mud block: place on board, reduce liters
@@ -307,8 +314,8 @@ window.addEventListener('DOMContentLoaded', function() {
     function updateLiters(lines) {
         if (lines) {
             if (soundOn && sounds.lineClear) { sounds.lineClear.currentTime = 0; sounds.lineClear.play(); }
-            showSplash();
             showBucketFill(lines);
+            showSplash();
             let litersOld = liters;
             liters += lines * 200;
             linesCleared += lines;
@@ -564,11 +571,9 @@ window.addEventListener('DOMContentLoaded', function() {
         if (!bucketAnim || !bucketWater) return;
         bucketAnim.style.display = 'block';
         bucketWater.style.height = '0';
-        // Animate fill based on lines cleared (max fill for 4 lines)
         setTimeout(() => {
             bucketWater.style.height = `${Math.min(56, 16 * lines)}px`;
         }, 50);
-        // Hide after animation
         setTimeout(() => {
             bucketAnim.style.display = 'none';
             bucketWater.style.height = '0';
@@ -579,7 +584,6 @@ window.addEventListener('DOMContentLoaded', function() {
     function showJerryCanBonus() {
         if (!jerryCanAnim) return;
         jerryCanAnim.style.display = 'block';
-        // Restart animation by re-adding the element (force reflow)
         jerryCanAnim.children[0].style.animation = 'none';
         void jerryCanAnim.children[0].offsetWidth;
         jerryCanAnim.children[0].style.animation = 'jerry-bounce 0.7s cubic-bezier(.34,1.8,.64,1) forwards';
