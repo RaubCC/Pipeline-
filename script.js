@@ -321,6 +321,7 @@ window.addEventListener('DOMContentLoaded', function() {
         }
     }
     function updateLevel() {
+        let levelUp = false; // Track if we leveled up
         if (linesCleared >= linesToNextLevel) {
             if (level < 5) {
                 level++;
@@ -329,11 +330,13 @@ window.addEventListener('DOMContentLoaded', function() {
                 mudChance = DIFFICULTY_SETTINGS[currentDifficulty].mudChance[level - 1];
                 dropSpeeds = DIFFICULTY_SETTINGS[currentDifficulty].dropSpeeds;
                 showFact(`Level Up! Welcome to Level ${level}.`);
-                if (soundOn && sounds.levelUp) { sounds.levelUp.currentTime = 0; sounds.levelUp.play(); }
+                levelUp = true; // We leveled up!
                 showConfetti();
                 updateLevelDisplay();
             }
         }
+        // Play the level up sound if we leveled up
+        if (levelUp && soundOn && sounds.levelUp) { sounds.levelUp.currentTime = 0; sounds.levelUp.play(); }
     }
     function updateLinesToNext() {
         const left = Math.max(0, linesToNextLevel - linesCleared);
@@ -368,6 +371,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 updateLiters(lines);
                 resetTetromino();
                 if (!validMove()) {
+                    // Play the game over sound if sound is on
                     if (soundOn && sounds.gameOver) { sounds.gameOver.currentTime = 0; sounds.gameOver.play(); }
                     showGameOverOverlay();
                     gameOver = true;
