@@ -358,6 +358,16 @@ window.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById('how-to-modal');
         modal.style.display = 'none';
     }
+    // Beginner-friendly function to close the How To modal
+    function closeHowTo() {
+      // Hide the How To modal if it exists
+      const modal = document.getElementById('how-to-modal');
+      if (modal) {
+        modal.style.display = 'none';
+      }
+      // For debugging/learning
+      console.log('closeHowTo function called');
+    }
     function drop() {
         if (gameOver || paused) return;
         let now = Date.now(), delta = now - dropStart;
