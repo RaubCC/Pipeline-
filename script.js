@@ -293,6 +293,7 @@ window.addEventListener('DOMContentLoaded', function() {
     function updateLiters(lines) {
         if (lines) {
             showSplash();
+            showBucketFill(lines);
             let litersOld = liters;
             liters += lines * 200;
             linesCleared += lines;
