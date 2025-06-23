@@ -113,8 +113,26 @@ window.addEventListener('DOMContentLoaded', function() {
             name: PIECE_NAMES[index + 1]
         };
     }
-    function drawBlock(x, y, color, ctx = context, index = null) {
-        // base square
+    function drawBlock(x, y, color, ctx = context, index = null, rotation = 0) {
+        // For pipe pieces (I, O, T, S, Z, J, L), use drawPipeSegment
+        // index: 1 = I, 2 = O, 3 = T, 4 = S, 5 = Z, 6 = J, 7 = L
+        if (index >= 1 && index <= 7) {
+            // For I-pipe (index 1), horizontal or vertical
+            let rot = 0;
+            if (index === 1) {
+                // I-pipe: horizontal if shape is 1x4, vertical if 4x1
+                rot = (current && current.shape && current.shape.length > 1) ? 1 : 0;
+            } else if (index === 6) {
+                // J-pipe: try to guess rotation (simple, for demo)
+                rot = 3;
+            } else if (index === 7) {
+                // L-pipe: try to guess rotation (simple, for demo)
+                rot = 1;
+            }
+            drawPipeSegment(ctx, x, y, rot);
+            return;
+        }
+        // Otherwise, use old block logic
         ctx.fillStyle = color;
         ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         ctx.strokeStyle = "#222";
@@ -150,6 +168,44 @@ window.addEventListener('DOMContentLoaded', function() {
             ctx.fill();
         }
     }
+    // Draw a pipe segment with end-caps, gradient shine, and outlines
+    function drawPipeSegment(ctx, col, row, rotation = 0) {
+      const px = col * BLOCK_SIZE;
+      const py = row * BLOCK_SIZE;
+      const w  = BLOCK_SIZE;
+      const h  = BLOCK_SIZE;
+      const r  = w * 0.15;    // cap radius
+      // 1) create a nice blue gradient down the pipe:
+      const grad = ctx.createLinearGradient(px, py, px + w, py + h);
+      grad.addColorStop(0, '#A4ECFF');
+      grad.addColorStop(1, '#68CFFF');
+      // 2) draw a horizontal “barrel” + two semicircular endcaps:
+      ctx.save();
+      // move to centre then rotate so you can reuse same shape:
+      ctx.translate(px + w/2, py + h/2);
+      ctx.rotate(rotation * Math.PI/2);
+      ctx.translate(-w/2, -h/2);
+
+      // barrel
+      ctx.fillStyle   = grad;
+      ctx.strokeStyle = '#2795D6';
+      ctx.lineWidth   = 4;
+      ctx.beginPath();
+      ctx.moveTo(r, h/2);
+      ctx.lineTo(w - r, h/2);
+      // right cap
+      ctx.arc(w - r, h/2, r,  -Math.PI/2, Math.PI/2);
+      // back to barrel
+      ctx.lineTo(r, h/2 + r);
+      // left cap
+      ctx.arc(r, h/2,  r,  Math.PI/2,   -Math.PI/2, true);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
     function drawBoard() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         for (let y = 0; y < ROWS; ++y)
