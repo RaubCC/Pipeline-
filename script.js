@@ -102,6 +102,9 @@ window.addEventListener('DOMContentLoaded', function() {
     const pipesSprite = new window.Image();
     pipesSprite.src = 'img/Pipes.png';
 
+    // Show loading message until pipesSprite is loaded
+    const loadingMsg = document.getElementById('loading-message');
+
     // Game state
     let board, current, next, pos, liters, dropStart, gameOver, linesCleared, level, linesToNextLevel, mudChance, dropSpeeds, paused;
 
@@ -516,6 +519,17 @@ window.addEventListener('DOMContentLoaded', function() {
     //     drop(); // Resume the drop loop if needed
     // });
 
+    // Only start the game after pipesSprite is loaded
+    pipesSprite.onload = function() {
+        if (loadingMsg) loadingMsg.style.display = 'none';
+        startGame();
+    };
+    // If the image is already cached, onload may not fire
+    if (pipesSprite.complete) {
+        if (loadingMsg) loadingMsg.style.display = 'none';
+        startGame();
+    }
+
     function startGame() {
         liters = 0;
         linesCleared = 0;
@@ -701,7 +715,4 @@ window.addEventListener('DOMContentLoaded', function() {
       el.classList.add('active');
       setTimeout(() => el.classList.remove('active'), 200);
     }
-
-    // Start the game
-    startGame();
 });
