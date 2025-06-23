@@ -129,14 +129,16 @@ window.addEventListener('DOMContentLoaded', function() {
             name: PIECE_NAMES[index + 1]
         };
     }
-    function drawBlock(x, y, color, ctx = context) {
+    function drawBlock(x, y, color, ctx = context, index = null) {
+        // base square
         ctx.fillStyle = color;
         ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         ctx.strokeStyle = "#222";
-        ctx.lineWidth = 2;
+        ctx.lineWidth   = 2;
         ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-        // Draw can icon if Jerry Can
-        if (color === COLORS[8]) {
+
+        // Jerry Can icon
+        if (index === 8) {
             ctx.fillStyle = "#FFC907";
             ctx.fillRect(
                 x * BLOCK_SIZE + BLOCK_SIZE * 0.2,
@@ -151,20 +153,28 @@ window.addEventListener('DOMContentLoaded', function() {
                 BLOCK_SIZE * 0.25
             );
         }
-        // Draw mud icon if mud block
-        if (color === COLORS[9]) {
+        // Mud-ball icon
+        if (index === 9) {
             ctx.fillStyle = '#6B3E14';
             ctx.beginPath();
-            ctx.arc(x * BLOCK_SIZE + BLOCK_SIZE/2, y * BLOCK_SIZE + BLOCK_SIZE/2, BLOCK_SIZE/4, 0, 2 * Math.PI);
+            ctx.arc(
+                x * BLOCK_SIZE + BLOCK_SIZE / 2,
+                y * BLOCK_SIZE + BLOCK_SIZE / 2,
+                BLOCK_SIZE / 4,
+                0, 2 * Math.PI
+            );
             ctx.fill();
         }
     }
     function drawBoard() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         for (let y = 0; y < ROWS; ++y)
-            for (let x = 0; x < COLS; ++x)
-                if (board[y][x])
-                    drawBlock(x, y, COLORS[board[y][x]]);
+            for (let x = 0; x < COLS; ++x) {
+                const val = board[y][x];
+                if (val) {
+                    drawBlock(x, y, COLORS[val], context, val);
+                }
+            }
         drawTetromino();
     }
     function drawTetromino() {
@@ -183,13 +193,6 @@ window.addEventListener('DOMContentLoaded', function() {
         });
     }
     function validMove(offsetX = 0, offsetY = 0, tetromino = current.shape) {
-        // For debugging: log the tetromino variable before accessing shape
-        console.log("Variable before accessing shape:", tetromino);
-        // Example: check if tetromino.shape is 'rect' (for demonstration)
-        if (tetromino.shape === 'rect') {
-            // ... rest of the code ...
-            // (You can add your custom logic here)
-        }
         for (let y = 0; y < tetromino.length; ++y) {
             for (let x = 0; x < tetromino[y].length; ++x) {
                 if (!tetromino[y][x]) continue;
@@ -222,8 +225,10 @@ window.addEventListener('DOMContentLoaded', function() {
             showJerryCanBonus();
             // Jerry Can: clear this row instantly and double liters
             let clearRow = pos.y;
-            for (let x = 0; x < COLS; x++) {
-                board[clearRow][x] = 0;
+            if (clearRow >= 0 && clearRow < ROWS) {
+                for (let x = 0; x < COLS; x++) {
+                    board[clearRow][x] = 0;
+                }
             }
             liters += 400;
         } else if (current.index === 9) {
@@ -333,21 +338,23 @@ window.addEventListener('DOMContentLoaded', function() {
         }
     }
     function updateLevel() {
-        let levelUp = false; // Track if we leveled up
+        let levelUp = false;
         if (linesCleared >= linesToNextLevel) {
             if (level < 5) {
                 level++;
                 linesCleared = 0;
                 linesToNextLevel += DIFFICULTY_SETTINGS[currentDifficulty].linesToNextLevel;
-                mudChance = DIFFICULTY_SETTINGS[currentDifficulty].mudChance[level - 1];
+                
+                const mudArr = DIFFICULTY_SETTINGS[currentDifficulty].mudChance;
+                mudChance = mudArr[Math.min(mudArr.length - 1, level - 1)];
+                
                 dropSpeeds = DIFFICULTY_SETTINGS[currentDifficulty].dropSpeeds;
                 showFact(`Level Up! Welcome to Level ${level}.`);
-                levelUp = true; // We leveled up!
+                levelUp = true;
                 showConfetti();
                 updateLevelDisplay();
             }
         }
-        // Play the level up sound if we leveled up
         if (levelUp) playSound(sounds.levelUp);
     }
     function updateLinesToNext() {
