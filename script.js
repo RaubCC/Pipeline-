@@ -563,6 +563,16 @@ window.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => { jerryCanAnim.style.display = 'none'; }, 720);
     }
 
+    // Show the mud splatter animation
+    function showMudSplatter() {
+        if (!mudSplatterAnim) return;
+        mudSplatterAnim.style.display = 'block';
+        mudSplatterAnim.children[0].style.animation = 'none';
+        void mudSplatterAnim.children[0].offsetWidth;
+        mudSplatterAnim.children[0].style.animation = 'mud-fade 0.5s cubic-bezier(.64,0,.34,1) forwards';
+        setTimeout(() => { mudSplatterAnim.style.display = 'none'; }, 520);
+    }
+
     // Start the game
     startGame();
 });
