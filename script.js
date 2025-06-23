@@ -461,6 +461,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
         const key = e.key.toLowerCase();
 
+        // Allow WASD as arrow key controls for beginners
         if (key === "arrowleft" || key === "a") {
             if (validMove(-1, 0)) pos.x--;
         }
