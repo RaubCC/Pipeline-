@@ -6,6 +6,11 @@ const bucketWater = document.getElementById('bucket-water');
 const jerryCanAnim = document.getElementById('jerrycan-bonus');
 const mudSplatterAnim = document.getElementById('mud-splatter');
 const factRotator = document.getElementById('fact-rotator');
+const btnLeft = document.getElementById('btn-left');
+const btnRight = document.getElementById('btn-right');
+const btnRotate = document.getElementById('btn-rotate');
+const btnDrop = document.getElementById('btn-drop');
+const difficultySelect = document.getElementById('difficulty');
 
 // === SOUNDS ===
 // Sound effects — files should be in a local 'sounds/' folder:
@@ -516,6 +521,15 @@ window.addEventListener('DOMContentLoaded', function() {
     // Charity: water Fact Rotator
     setInterval(showRotatingFact, 8000);
     showRotatingFact();
+
+    // Listen for difficulty changes
+    if (difficultySelect) {
+        difficultySelect.value = currentDifficulty; // Set initial value
+        difficultySelect.addEventListener('change', function() {
+            currentDifficulty = difficultySelect.value;
+            startGame(); // Restart game with new difficulty
+        });
+    }
 
     // --- Mobile Controls for Touch Devices ---
     // These buttons let users play on phones/tablets without a keyboard.
