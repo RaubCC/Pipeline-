@@ -435,14 +435,20 @@ window.addEventListener('DOMContentLoaded', function() {
         handleKey(e);
     });
 
+    // Assume an element with the ID 'sidebar-toggle' exists in your HTML
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+
     pauseBtn.onclick = function() {
         paused = !paused;
         pauseBtn.textContent = paused ? 'Resume' : 'Pause';
         if (!paused) drop();
     };
+
+    // Now sidebarToggle is defined and can be used
     sidebarToggle.onclick = function() {
         sidebar.classList.toggle('collapsed');
     };
+
     document.getElementById('instructions').onclick = function() {
         howToModal.style.display = 'flex';
     };
