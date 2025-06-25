@@ -178,3 +178,24 @@ footer {
   color:#fff; text-shadow:0 2px 8px #222; z-index:3;
   pointer-events:none;
 }
+/* 1. Enlarge the Jerry-Can meter */
+#jerry-can-meter {
+  width: 100px;
+  height: 150px;
+  margin-right: 20px;
+}
+#jerry-can-meter #can-img {
+  width: 100px;
+  height: 150px;
+}
+
+/* 2. Remove canvas border-radius so block outlines never get clipped */
+#tetris {
+  border-radius: 0 !important;
+}
+
+/* 3. Enlarge next-piece preview */
+#next-piece canvas#next {
+  width: 150px !important;
+  height: 150px !important;
+}
