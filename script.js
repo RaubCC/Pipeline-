@@ -14,6 +14,8 @@ const difficultySelect = document.getElementById('difficulty');
 const waterMeter = document.getElementById('water-meter');
 const waterFill = document.getElementById('fill');
 const linesToNext = document.getElementById('lines-to-next'); // Add this line
+const canWater = document.getElementById('can-water');
+const canLiters = document.getElementById('can-liters');
 
 // Difficulty settings for the game
 // These control drop speeds, mud block chance, and lines needed to level up
@@ -812,4 +814,21 @@ window.onload = function() {
         ctx.lineWidth   = 2;
         ctx.strokeRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
       });
+    }
+
+    // Replace updateJerryCanFill with this beginner-friendly function:
+    function updateJerryCanFill(liters) {
+      const maxLiters = 2000;               // total “full” capacity
+      const percent   = Math.min(liters / maxLiters, 1);
+      // grow from 0 up to 150px
+      canWater.style.height    = `${Math.floor(percent * 150)}px`;
+      canLiters.textContent    = `${liters}L`;
+
+      // pulse when full
+      if (percent === 1) {
+        canWater.style.boxShadow = '0 0 24px 8px #2E9DF7aa';
+        setTimeout(() => {
+          canWater.style.boxShadow = '';
+        }, 600);
+      }
     }
