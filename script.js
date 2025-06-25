@@ -37,17 +37,80 @@ const DIFFICULTY_SETTINGS = {
 let currentDifficulty = 'normal';
 
 // === Preload Tetris piece images ===
-const SHAPES = ['I','O','T','L','J','S','Z'];
+const SHAPE_TYPES = ['I','O','T','L','J','S','Z'];
 const tetrominoImages = {};
 let loadedCount = 0;
-SHAPES.forEach(type => {
+let pageLoaded = false;
+
+// This maps each letter to its 4 rotations (each rotation is an array of [x, y] offsets)
+const SHAPES = {
+  I: [
+    [[0,1],[1,1],[2,1],[3,1]],
+    [[2,0],[2,1],[2,2],[2,3]],
+    [[0,2],[1,2],[2,2],[3,2]],
+    [[1,0],[1,1],[1,2],[1,3]]
+  ],
+  O: [
+    [[1,1],[2,1],[1,2],[2,2]],
+    [[1,1],[2,1],[1,2],[2,2]],
+    [[1,1],[2,1],[1,2],[2,2]],
+    [[1,1],[2,1],[1,2],[2,2]]
+  ],
+  T: [
+    [[1,0],[0,1],[1,1],[2,1]],
+    [[1,0],[1,1],[2,1],[1,2]],
+    [[0,1],[1,1],[2,1],[1,2]],
+    [[1,0],[0,1],[1,1],[1,2]]
+  ],
+  L: [
+    [[0,0],[0,1],[1,1],[2,1]],
+    [[1,0],[2,0],[1,1],[1,2]],
+    [[0,1],[1,1],[2,1],[2,2]],
+    [[1,0],[1,1],[0,2],[1,2]]
+  ],
+  J: [
+    [[2,0],[0,1],[1,1],[2,1]],
+    [[1,0],[1,1],[1,2],[2,2]],
+    [[0,1],[1,1],[2,1],[0,2]],
+    [[0,0],[1,0],[1,1],[1,2]]
+  ],
+  S: [
+    [[1,0],[2,0],[0,1],[1,1]],
+    [[1,0],[1,1],[2,1],[2,2]],
+    [[1,1],[2,1],[0,2],[1,2]],
+    [[0,0],[0,1],[1,1],[1,2]]
+  ],
+  Z: [
+    [[0,0],[1,0],[1,1],[2,1]],
+    [[2,0],[1,1],[2,1],[1,2]],
+    [[0,1],[1,1],[1,2],[2,2]],
+    [[1,0],[0,1],[1,1],[0,2]]
+  ]
+};
+
+// This function checks if both the page and all images are loaded
+function tryInitGame() {
+  if (loadedCount === SHAPE_TYPES.length && pageLoaded) {
+    initGame();
+  }
+}
+
+// Preload all tetromino images
+SHAPE_TYPES.forEach(type => {
   const img = new Image();
   img.src = `img/pipe-tetris-${type}.png`;
   img.onload = () => {
-    if (++loadedCount === SHAPES.length) initGame();
+    loadedCount++;
+    tryInitGame(); // Try to start the game after each image loads
   };
   tetrominoImages[type] = img;
 });
+
+// Wait for the page to finish loading
+window.onload = function() {
+  pageLoaded = true;
+  tryInitGame(); // Try to start the game after the page loads
+};
 
 // Replace window.addEventListener('DOMContentLoaded', ...) with initGame
 function initGame() {
@@ -136,13 +199,29 @@ function initGame() {
         };
     }
     function drawBlock(x, y, color, ctx = context, index = null, rotation = 0) {
-        // For all pieces, just draw a colored block (beginner-friendly)
+        // If this is a normal tetromino (1-7), draw the image
+        if (index && index >= 1 && index <= 7) {
+            // index 1-7 correspond to SHAPE_TYPES[0-6]
+            const type = SHAPE_TYPES[index - 1];
+            ctx.drawImage(
+                tetrominoImages[type],
+                x * BLOCK_SIZE,
+                y * BLOCK_SIZE,
+                BLOCK_SIZE,
+                BLOCK_SIZE
+            );
+            // Draw a border for visibility
+            ctx.strokeStyle = "#222";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            return;
+        }
+        // For Jerry Can (8), Mud (9), or empty, use color or special logic
         ctx.fillStyle = color || '#888';
         ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         ctx.strokeStyle = "#222";
         ctx.lineWidth   = 2;
         ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-
         // Jerry Can icon
         if (index === 8) {
             ctx.fillStyle = "#FFC907";
