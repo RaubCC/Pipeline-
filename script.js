@@ -99,6 +99,15 @@ window.addEventListener('DOMContentLoaded', function() {
     // Show loading message until pipesSprite is loaded
     const loadingMsg = document.getElementById('loading-message');
 
+    // === Preload Tetris piece images ===
+    const SHAPES_PRELOAD = ['I','O','T','L','J','S','Z'];
+    const tetrominoImages = {};
+    SHAPES_PRELOAD.forEach(type => {
+      const img = new Image();
+      img.src = `img/pipe-tetris-${type}.png`;
+      tetrominoImages[type] = img;
+    });
+
     // Game state
     let board, current, next, pos, liters, dropStart, gameOver, linesCleared, level, linesToNextLevel, mudChance, dropSpeeds, paused;
 
