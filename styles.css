@@ -199,3 +199,15 @@ footer {
   width: 150px !important;
   height: 150px !important;
 }
+#jerry-can-meter {
+  width: 100px;
+  height: 150px;        /* ← match this new tall size */
+}
+#jerry-can-meter #can-img {
+  width: 100px;
+  height: 150px;
+}
+#can-water {
+  transition: height 0.5s cubic-bezier(.25,1,.5,1);
+  /* initial height:0; will animate up/down to whatever you set */
+}
