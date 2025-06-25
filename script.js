@@ -117,8 +117,6 @@ function initGame() {
     // DOM elements
     const canvas = document.getElementById('tetris');
     const context = canvas.getContext('2d');
-    const nextCanvas = document.getElementById('next');
-    const nextContext = nextCanvas.getContext('2d');
     const deliveredDisplay = document.getElementById('water-delivered');
     const factPopup = document.getElementById('fact-popup');
     const factText = document.getElementById('fact-text');
@@ -132,8 +130,9 @@ function initGame() {
     let factIndex = 0;
 
     // Game constants
-    const ROWS = 20, COLS = 10, BLOCK_SIZE = 30;
-    canvas.width = COLS * BLOCK_SIZE;
+    const ROWS = 20, COLS = 10, BLOCK_SIZE = 48; // Make blocks bigger for better visibility
+    // Set canvas size based on block size and board dimensions
+    canvas.width  = COLS * BLOCK_SIZE;
     canvas.height = ROWS * BLOCK_SIZE;
     const SHAPES = [
         [[1, 1, 1, 1]],
@@ -169,10 +168,6 @@ function initGame() {
     COLORS.push('#8B5C2A');
     PIECE_NAMES.push('Mud Block');
 
-    // Preload mud image for mud block
-    const mudImg = new window.Image();
-    mudImg.src = 'img/Mud.png';
-
     // Show loading message until pipesSprite is loaded
     const loadingMsg = document.getElementById('loading-message');
 
@@ -199,55 +194,14 @@ function initGame() {
         };
     }
     function drawBlock(x, y, color, ctx = context, index = null, rotation = 0) {
-        // If this is a normal tetromino (1-7), draw the image
-        if (index && index >= 1 && index <= 7) {
-            // index 1-7 correspond to SHAPE_TYPES[0-6]
-            const type = SHAPE_TYPES[index - 1];
-            ctx.drawImage(
-                tetrominoImages[type],
-                x * BLOCK_SIZE,
-                y * BLOCK_SIZE,
-                BLOCK_SIZE,
-                BLOCK_SIZE
-            );
-            // Draw a border for visibility
-            ctx.strokeStyle = "#222";
-            ctx.lineWidth = 2;
-            ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-            return;
-        }
-        // For Jerry Can (8), Mud (9), or empty, use color or special logic
+        // Only use color fill for all blocks (beginner-friendly)
         ctx.fillStyle = color || '#888';
         ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
         ctx.strokeStyle = "#222";
         ctx.lineWidth   = 2;
         ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-        // Jerry Can icon
-        if (index === 8) {
-            ctx.fillStyle = "#FFC907";
-            ctx.fillRect(
-                x * BLOCK_SIZE + BLOCK_SIZE * 0.2,
-                y * BLOCK_SIZE + BLOCK_SIZE * 0.4,
-                BLOCK_SIZE * 0.6,
-                BLOCK_SIZE * 0.4
-            );
-            ctx.fillRect(
-                x * BLOCK_SIZE + BLOCK_SIZE * 0.35,
-                y * BLOCK_SIZE + BLOCK_SIZE * 0.2,
-                BLOCK_SIZE * 0.3,
-                BLOCK_SIZE * 0.25
-            );
-        }
-        // Mud image icon
-        if (index === 9) {
-            ctx.drawImage(
-                mudImg,
-                x * BLOCK_SIZE,
-                y * BLOCK_SIZE,
-                BLOCK_SIZE,
-                BLOCK_SIZE
-            );
-        }
+        // Jerry Can icon (optional: keep as color block)
+        // Mud icon (optional: keep as color block)
     }
     // Draw a pipe segment with end-caps, gradient shine, and outlines
     function drawPipeSegment(ctx, col, row, rotation = 0) {
@@ -305,14 +259,23 @@ function initGame() {
             });
         });
     }
-    function drawNext() {
-        nextContext.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
-        next.shape.forEach((row, y) => {
-            row.forEach((value, x) => {
-                if (value) drawBlock(x + 1, y + 1, next.color, nextContext);
-            });
-        });
+    // Get the next piece preview canvas and context
+    const nextCanvas = document.getElementById('next');
+    const pCtx       = nextCanvas.getContext('2d');
+
+    // Draw the next piece in the preview canvas
+    function drawNext(nextType) {
+      pCtx.clearRect(0, 0, nextCanvas.width, nextCanvas.height);
+      const shape = SHAPES[nextType][0]; // always rotation 0 for preview
+      pCtx.fillStyle = COLORS[nextType];
+      shape.forEach(([dx, dy]) => {
+        pCtx.fillRect(dx * BLOCK_SIZE, dy * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+        pCtx.strokeStyle = '#000';
+        pCtx.lineWidth = 2;
+        pCtx.strokeRect(dx * BLOCK_SIZE, dy * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+      });
     }
+
     function validMove(offsetX = 0, offsetY = 0, tetromino = current.shape) {
         for (let y = 0; y < tetromino.length; ++y) {
             for (let x = 0; x < tetromino[y].length; ++x) {
@@ -837,16 +800,16 @@ window.onload = function() {
   // Otherwise, initGame will be called by the last image's onload
 };
 
-    // Draw a tetromino piece using its image
-    function drawPiece(type, shape, offsetX, offsetY, ctx = context) {
-        // shape is an array of [dx, dy] pairs for each block in the piece
-        shape.forEach(([dx, dy]) => {
-            const px = (offsetX + dx) * BLOCK_SIZE;
-            const py = (offsetY + dy) * BLOCK_SIZE;
-            ctx.drawImage(
-                tetrominoImages[type],
-                px, py,
-                BLOCK_SIZE, BLOCK_SIZE
-            );
-        });
+    // Draw a tetromino piece using only fillRect (beginner-friendly)
+    function drawPiece(type, rotation, offsetX, offsetY, ctx = context) {
+      const shape = SHAPES[type][rotation];
+      ctx.fillStyle = COLORS[type]; // your existing color map
+      shape.forEach(([dx, dy]) => {
+        const x = (offsetX + dx) * BLOCK_SIZE;
+        const y = (offsetY + dy) * BLOCK_SIZE;
+        ctx.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+        ctx.strokeStyle = '#000'; // optional outline
+        ctx.lineWidth   = 2;
+        ctx.strokeRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+      });
     }
