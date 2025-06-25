@@ -36,7 +36,21 @@ const DIFFICULTY_SETTINGS = {
 };
 let currentDifficulty = 'normal';
 
-window.addEventListener('DOMContentLoaded', function() {
+// === Preload Tetris piece images ===
+const SHAPES = ['I','O','T','L','J','S','Z'];
+const tetrominoImages = {};
+let loadedCount = 0;
+SHAPES.forEach(type => {
+  const img = new Image();
+  img.src = `img/pipe-tetris-${type}.png`;
+  img.onload = () => {
+    if (++loadedCount === SHAPES.length) initGame();
+  };
+  tetrominoImages[type] = img;
+});
+
+// Replace window.addEventListener('DOMContentLoaded', ...) with initGame
+function initGame() {
     // DOM elements
     const canvas = document.getElementById('tetris');
     const context = canvas.getContext('2d');
@@ -98,15 +112,6 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Show loading message until pipesSprite is loaded
     const loadingMsg = document.getElementById('loading-message');
-
-    // === Preload Tetris piece images ===
-    const SHAPES_PRELOAD = ['I','O','T','L','J','S','Z'];
-    const tetrominoImages = {};
-    SHAPES_PRELOAD.forEach(type => {
-      const img = new Image();
-      img.src = `img/pipe-tetris-${type}.png`;
-      tetrominoImages[type] = img;
-    });
 
     // Game state
     let board, current, next, pos, liters, dropStart, gameOver, linesCleared, level, linesToNextLevel, mudChance, dropSpeeds, paused;
@@ -742,4 +747,27 @@ window.addEventListener('DOMContentLoaded', function() {
         boardDiv.appendChild(rowDiv);
       }
     }
-});
+}
+
+// At the end of the file, after all function definitions:
+window.onload = function() {
+  // If all images are already loaded (from cache), loadedCount will be SHAPES.length
+  if (loadedCount === SHAPES.length) {
+    initGame();
+  }
+  // Otherwise, initGame will be called by the last image's onload
+};
+
+    // Draw a tetromino piece using its image
+    function drawPiece(type, shape, offsetX, offsetY, ctx = context) {
+        // shape is an array of [dx, dy] pairs for each block in the piece
+        shape.forEach(([dx, dy]) => {
+            const px = (offsetX + dx) * BLOCK_SIZE;
+            const py = (offsetY + dy) * BLOCK_SIZE;
+            ctx.drawImage(
+                tetrominoImages[type],
+                px, py,
+                BLOCK_SIZE, BLOCK_SIZE
+            );
+        });
+    }
